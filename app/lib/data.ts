@@ -2,17 +2,18 @@ import { sql } from '@vercel/postgres';
 import {
   CustomerField,
   CustomersTableType,
-  InvoiceForm,
-  InvoicesTable,
   LatestInvoiceRaw,
   User,
   Revenue,
   Albums,
+  Events,
+  EventForm,
+  MemberField
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
-export async function fetchAlbums() {
+export async function fetchSaleChart() {
   noStore();
 
   try {
@@ -20,7 +21,7 @@ export async function fetchAlbums() {
     // mock wait
     await new Promise((resolve) => setTimeout(resolve, 2500));
 
-    const data = await sql<Albums> `SELECT * FROM albums ORDER BY release_date ASC`;
+    const data = await sql<Albums> `SELECT * FROM albums ORDER BY sale DESC LIMIT 8`;
     console.log('Data fetch completed after 2.5 seconds.');
 
     return data.rows;
@@ -76,27 +77,51 @@ export async function fetchLatestInvoices() {
   }
 }
 
+export async function fetchRecentEvents() {
+  // noStore();
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const data = await sql<Events>`
+      SELECT events.id, events.description, events.date, events.category, members.name, members.image_url
+      FROM events
+      JOIN members ON events.member_id = members.id
+      WHERE events.date >= CURRENT_DATE
+      ORDER BY events.date ASC
+      LIMIT 5`;
+
+    return data.rows;
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch events data.');
+  }
+}
+
 export async function fetchBPCardData() {
   noStore();
   try {
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     const totalSalesPromise = sql`SELECT SUM(sale) AS total FROM albums`;
-    const totalViewsPromise = 999999999999;
+    const totalViewsPromise = sql`SELECT SUM(views) AS total FROM singles`;
+    const totalStreamingsPromise = sql`SELECT SUM(streamings) AS total FROM singles`;
     const upcomingEventsPromise = sql`SELECT COUNT(*) FROM events WHERE date >= CURRENT_DATE`;
 
     const data = await Promise.all([
       totalSalesPromise,
+      totalViewsPromise,
+      totalStreamingsPromise,
       upcomingEventsPromise
     ]);
 
     const totalSales = Number(data[0].rows[0].total ?? '0');
-    const upcomingEvents = Number(data[1].rows[0].count ?? '0');
-    const totalViews = totalViewsPromise;
+    const totalViews = Number(data[1].rows[0].total ?? '0');
+    const totalStreamings = Number(data[2].rows[0].total ?? '0');
+    const upcomingEvents = Number(data[3].rows[0].count ?? '0');
 
     return {
       totalSales,
       totalViews,
+      totalStreamings,
       upcomingEvents
     };
   } catch(error) {
@@ -144,7 +169,7 @@ export async function fetchCardData() {
 }
 
 const ITEMS_PER_PAGE = 6;
-export async function fetchFilteredInvoices(
+export async function fetchFilteredEvents(
   query: string,
   currentPage: number,
 ) {
@@ -152,46 +177,43 @@ export async function fetchFilteredInvoices(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    const invoices = await sql<InvoicesTable>`
+    const events = await sql<Events>`
       SELECT
-        invoices.id,
-        invoices.amount,
-        invoices.date,
-        invoices.status,
-        customers.name,
-        customers.email,
-        customers.image_url
-      FROM invoices
-      JOIN customers ON invoices.customer_id = customers.id
+        events.id,
+        events.description,
+        events.date,
+        events.category,
+        members.name,
+        members.image_url
+      FROM events
+      JOIN members ON events.member_id = members.id
       WHERE
-        customers.name ILIKE ${`%${query}%`} OR
-        customers.email ILIKE ${`%${query}%`} OR
-        invoices.amount::text ILIKE ${`%${query}%`} OR
-        invoices.date::text ILIKE ${`%${query}%`} OR
-        invoices.status ILIKE ${`%${query}%`}
-      ORDER BY invoices.date DESC
+        members.name ILIKE ${`%${query}%`} OR
+        events.description::text ILIKE ${`%${query}%`} OR
+        events.date::text ILIKE ${`%${query}%`} OR
+        events.category ILIKE ${`%${query}%`}
+      ORDER BY events.date DESC
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
 
-    return invoices.rows;
+    return events.rows;
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoices.');
+    throw new Error('Failed to fetch events.');
   }
 }
 
-export async function fetchInvoicesPages(query: string) {
+export async function fetchEventsPages(query: string) {
   noStore();
   try {
     const count = await sql`SELECT COUNT(*)
-    FROM invoices
-    JOIN customers ON invoices.customer_id = customers.id
+    FROM events
+    JOIN members ON events.member_id = members.id
     WHERE
-      customers.name ILIKE ${`%${query}%`} OR
-      customers.email ILIKE ${`%${query}%`} OR
-      invoices.amount::text ILIKE ${`%${query}%`} OR
-      invoices.date::text ILIKE ${`%${query}%`} OR
-      invoices.status ILIKE ${`%${query}%`}
+      members.name ILIKE ${`%${query}%`} OR
+      events.description::text ILIKE ${`%${query}%`} OR
+      events.date::text ILIKE ${`%${query}%`} OR
+      events.category ILIKE ${`%${query}%`}
   `;
 
     const totalPages = Math.ceil(Number(count.rows[0].count) / ITEMS_PER_PAGE);
@@ -202,29 +224,37 @@ export async function fetchInvoicesPages(query: string) {
   }
 }
 
-export async function fetchInvoiceById(id: string) {
+export async function fetchEventById(id: string) {
   noStore();
   try {
-    const data = await sql<InvoiceForm>`
+    const data = await sql<EventForm>`
       SELECT
-        invoices.id,
-        invoices.customer_id,
-        invoices.amount,
-        invoices.status
-      FROM invoices
-      WHERE invoices.id = ${id};
+        events.id,
+        events.member_id,
+        events.description,
+        events.date,
+        events.category
+      FROM events
+      WHERE events.id = ${id};
     `;
-
-    const invoice = data.rows.map((invoice) => ({
-      ...invoice,
-      // Convert amount from cents to dollars
-      amount: invoice.amount / 100,
-    }));
-
-    return invoice[0];
+    return data.rows[0];
   } catch (error) {
     console.error('Database Error:', error);
-    throw new Error('Failed to fetch invoice.');
+    throw new Error('Failed to fetch event.');
+  }
+}
+
+export async function fetchMembers() {
+  try {
+    const data = await sql<MemberField>`
+      SELECT id, name
+      FROM members
+    `;
+
+    return data.rows;
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch all members.');
   }
 }
 

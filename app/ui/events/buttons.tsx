@@ -1,23 +1,23 @@
-import { deleteInvoice } from '@/app/lib/action';
+import { deleteEvent } from '@/app/lib/action';
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
-export function CreateInvoice() {
+export function CreateEvent() {
   return (
     <Link
-      href="/dashboard/invoices/create"
+      href="/dashboard/events/create"
       className="flex h-10 items-center rounded-lg bg-pink-400 px-4 text-sm font-medium text-white transition-colors hover:bg-pink-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pink-400"
     >
-      <span className="hidden md:block">Create Invoice</span>{' '}
+      <span className="hidden md:block">Create Event</span>{' '}
       <PlusIcon className="h-5 md:ml-4" />
     </Link>
   );
 }
 
-export function UpdateInvoice({ id }: { id: string }) {
+export function UpdateEvent({ id }: { id: string }) {
   return (
     <Link
-      href={`/dashboard/invoices/${id}/edit`}
+      href={`/dashboard/events/${id}/edit`}
       className="rounded-md border p-2 hover:border-pink-400 hover:text-pink-400"
     >
       <PencilIcon className="w-5" />
@@ -25,10 +25,10 @@ export function UpdateInvoice({ id }: { id: string }) {
   );
 }
 
-export function DeleteInvoice({ id }: { id: string }) {
-  const deleteInvoiceWithId = deleteInvoice.bind(null, id);
+export function DeleteEvent({ id }: { id: string }) {
+  const deleteEventWithId = deleteEvent.bind(null, id);
   return (
-    <form action={deleteInvoiceWithId}>
+    <form action={deleteEventWithId}>
       <button className="rounded-md border p-2 hover:border-pink-400 hover:text-pink-400">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />

@@ -28,30 +28,32 @@ export async function authenticate(
 // This is temporary until @types/react-dom is updated
 export type State = {
     errors?: {
-      customerId?: string[];
-      amount?: string[];
-      status?: string[];
+      member_id?: string[];
+      description?: string[];
+      category?: string[];
+      date?: string[];
     };
     message?: string | null;
 };
 
 const FormSchema = z.object({
     id: z.string(),
-    customerId: z.string({invalid_type_error: 'Please select a customer.',}),
-    amount: z.coerce.number().gt(0, { message: 'Please enter an amount greater than $0.' }),
-    status: z.enum(['pending', 'paid'],{ invalid_type_error: 'Please select an invoice status.'}),
-    date: z.string()
+    member_id: z.string({invalid_type_error: 'Please select a member.',}),
+    description: z.string({ invalid_type_error: 'Please enter description about this event.' }),
+    category: z.enum(['special', 'stage','tvshow','music'],{ invalid_type_error: 'Please select an invoice status.'}),
+    date: z.string({invalid_type_error: 'Please pick a date'})
 });
 
-const CreateInvoice = FormSchema.omit({id: true, date: true});
-const UpdateInvoice = FormSchema.omit({id: true, date: true});
+const CreateEvent = FormSchema.omit({id: true});
+const UpdateEvent = FormSchema.omit({id: true});
 
-export async function createInvoice(prevState: State, formData: FormData) {
+export async function createEvent(prevState: State, formData: FormData) {
     // Validate form using Zod
-    const validatedFields = CreateInvoice.safeParse({
-      customerId: formData.get('customerId'),
-      amount: formData.get('amount'),
-      status: formData.get('status'),
+    const validatedFields = CreateEvent.safeParse({
+      member_id: formData.get('member_id'),
+      description: formData.get('description'),
+      category: formData.get('category'),
+      date: formData.get('date')
     });
    
     // If form validation fails, return errors early. Otherwise, continue.
@@ -63,64 +65,61 @@ export async function createInvoice(prevState: State, formData: FormData) {
     }
    
     // Prepare data for insertion into the database
-    const { customerId, amount, status } = validatedFields.data;
-    const amountInCents = amount * 100;
-    const date = new Date().toISOString().split('T')[0];
-   
+    const { member_id, description, category, date } = validatedFields.data;
     // Insert data into the database
     try {
       await sql`
-        INSERT INTO invoices (customer_id, amount, status, date)
-        VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+        INSERT INTO events (member_id, description, category, date)
+        VALUES (${member_id}, ${description}, ${category}, ${date})
       `;
     } catch (error) {
       // If a database error occurs, return a more specific error.
       return {
-        message: 'Database Error: Failed to Create Invoice.',
+        message: 'Database Error: Failed to Create Event.',
       };
     }
    
-    // Revalidate the cache for the invoices page and redirect the user.
-    revalidatePath('/dashboard/invoices');
-    redirect('/dashboard/invoices');
+    // Revalidate the cache for the events page and redirect the user.
+    revalidatePath('/dashboard/events');
+    redirect('/dashboard/events');
 }
 
-export async function updateInvoice(id:string, prevState: State, formData: FormData) {
+export async function updateEvent(id:string, prevState: State, formData: FormData) {
     try {
-        const validatedFields = UpdateInvoice.safeParse({
-            customerId: formData.get('customerId'),
-            amount: formData.get('amount'),
-            status: formData.get('status'),
+        const validatedFields = UpdateEvent.safeParse({
+            member_id: formData.get('member_id'),
+            description: formData.get('description'),
+            category: formData.get('category'),
+            date: formData.get('date')
           });
         if(!validatedFields.success) {
             return {
                 errors: validatedFields.error.flatten().fieldErrors,
-                message: 'Missing Fields. Failed to Edit Invoice.',
+                message: 'Missing Fields. Failed to Edit Event.',
             };
         }
-        const {customerId, amount, status} = validatedFields.data;
-        const amountInCents = amount * 100;
+        const {member_id, description, category, date} = validatedFields.data;
 
         await sql`
-            UPDATE invoices
-            SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
+            UPDATE events
+            SET member_id = ${member_id}, description = ${description}, category = ${category}, date = ${date}
             WHERE id = ${id}
         `;
 
-        revalidatePath('/dashboard/invoices');
+        revalidatePath('/dashboard/events');
     } catch(e) {
-        return { message: 'Database Error: Failed to Update Invoice.' };
+        return { message: 'Database Error: Failed to Update Event.' };
     }
 
-    redirect('/dashboard/invoices');
+    redirect('/dashboard/events');
 }
 
-export async function deleteInvoice(id: string) {
+export async function deleteEvent(id: string) {
     try{
-        await sql`DELETE FROM invoices WHERE id = ${id}`;
-        revalidatePath('/dashboard/invoices');
-        return { message: 'Deleted Invoice.' };
+        await sql`DELETE FROM events WHERE id = ${id}`;
+        revalidatePath('/dashboard/events');
+        return { message: 'Deleted Event.' };
     } catch(e) {
-        return { message: 'Database Error: Failed to Delete Invoice' };
+        return { message: 'Database Error: Failed to Delete Event' };
     }
 }

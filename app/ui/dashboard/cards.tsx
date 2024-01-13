@@ -1,6 +1,7 @@
 import {
   CurrencyDollarIcon,
   PlayCircleIcon,
+  MusicalNoteIcon,
   CalendarDaysIcon,
 } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
@@ -9,16 +10,18 @@ import { fetchBPCardData } from '@/app/lib/data';
 const iconMap = {
   sales: CurrencyDollarIcon,
   views: PlayCircleIcon,
+  streamings: MusicalNoteIcon,
   events: CalendarDaysIcon,
 };
 
 export default async function CardWrapper() {
-  const {totalSales, totalViews, upcomingEvents} = await fetchBPCardData();
+  const {totalSales, totalViews, totalStreamings, upcomingEvents} = await fetchBPCardData();
   return (
     <>
       {/* NOTE: comment in this code when you get to this point in the course */}
-      <Card title="Total Sales" value={totalSales} type="sales" />
-      <Card title="Total Views" value={totalViews} type="views" />
+      <Card title="Total Album Sales" value={totalSales} type="sales" />
+      <Card title="Total Youtube Views" value={totalViews} type="views" />
+      <Card title="Total Spotify Streamings" value={totalStreamings} type="streamings" />
       <Card title="Upcoming Events" value={upcomingEvents} type="events" />
     </>
   );
@@ -31,7 +34,7 @@ export function Card({
 }: {
   title: string;
   value: number | string;
-  type: 'sales' | 'views' | 'events';
+  type: 'sales' | 'views' | 'events' | 'streamings';
 }) {
   const Icon = iconMap[type];
 

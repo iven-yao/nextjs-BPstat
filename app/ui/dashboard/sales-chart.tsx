@@ -1,7 +1,7 @@
 import { generateSaleChartYAxis, generateYAxis } from '@/app/lib/utils';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { lusitana } from '@/app/ui/fonts';
-import { fetchAlbums } from '@/app/lib/data';
+import { fetchSaleChart } from '@/app/lib/data';
 
 // This component is representational only.
 // For data visualization UI, check out:
@@ -10,7 +10,7 @@ import { fetchAlbums } from '@/app/lib/data';
 // https://airbnb.io/visx/
 
 export default async function SalesChart() {
-  const albums = await fetchAlbums();
+  const albums = await fetchSaleChart();
   const chartHeight = 350;
   // NOTE: comment in this code when you get to this point in the course
 
@@ -23,14 +23,14 @@ export default async function SalesChart() {
   return (
     <div className="w-full md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Physical Sales by Album
+        Top Sales Album
       </h2>
       {/* NOTE: comment in this code when you get to this point in the course */}
 
       <div className="rounded-xl bg-black border-2 border-pink-400 p-4">
         <div className="sm:grid-cols-9 mt-0 grid grid-cols-9 items-end gap-2 rounded-md md:gap-4">
           <div
-            className="hidden flex-col justify-between text-sm text-gray-400 sm:flex"
+            className="hidden flex-col justify-between text-right text-sm text-gray-400 sm:flex"
             style={{ height: `${chartHeight}px` }}
           >
             {yAxisLabels.map((label) => (

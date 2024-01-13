@@ -39,6 +39,28 @@ export type Albums = {
   sale: number;
 }
 
+export type Events = {
+  id: string;
+  description: string;
+  date: Date;
+  category: 'special'|'stage'|'tvshow'|'music';
+  name: string;
+  image_url: string;
+}
+
+export type EventForm = {
+  id: string;
+  member_id: string;
+  description: string;
+  date: Date;
+  category: 'special'|'stage'|'tvshow'|'music';
+}
+
+export type MemberField = {
+  id: string;
+  name: string;
+}
+
 export type LatestInvoice = {
   id: string;
   name: string;

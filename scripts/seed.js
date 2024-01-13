@@ -6,6 +6,7 @@ const {
   members,
   albums,
   events,
+  singles,
   users,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
@@ -204,14 +205,14 @@ async function seedMembers(client) {
 async function seedAlbums(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
-
+    await client.sql`DROP TABLE albums`;
     // Create the "albums" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS albums (
         id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
         member_id UUID NOT NULL,
         name VARCHAR(255) NOT NULL,
-        release_date VARCHAR(255) NOT NULL,
+        release_date DATE NOT NULL,
         sale INT NOT NULL
       );
     `;
@@ -280,6 +281,45 @@ async function seedEvents(client) {
   }
 }
 
+async function seedSingles(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "singles" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS singles (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        album_id UUID,
+        member_id UUID NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        views INT NOT NULL,
+        streamings INT NOT NULL
+      );
+    `;
+
+    console.log(`Created "singles" table`);
+
+    // Insert data into the "albums" table
+    const insertedSingles = await Promise.all(
+      singles.map(
+        (single) => client.sql`
+        INSERT INTO singles (id, album_id, member_id, name, views, streamings)
+        VALUES (${single.id}, ${single.album_id}, ${single.member_id}, ${single.name}, ${single.views}, ${single.streamings})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedSingles.length} singles`);
+
+    return {
+      createTable,
+      singles: insertedSingles,
+    };
+  } catch (error) {
+    console.error('Error seeding singles:', error);
+    throw error;
+  }
+}
 
 async function main() {
   const client = await db.connect();
@@ -289,8 +329,9 @@ async function main() {
   // await seedInvoices(client);
   // await seedRevenue(client);
   // await seedMembers(client);
+  // await seedEvents(client);
   // await seedAlbums(client);
-  await seedEvents(client);
+  // await seedSingles(client);
 
   await client.end();
 }

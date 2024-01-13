@@ -252,66 +252,119 @@ const events = [
     date: '2024-03-27',
     category: 'special'
   },
-
 ]
 
 const albums = [
   {
+    id:'918f287c-98c6-4033-901b-9127453d580c',
+    member_id: members[0].id,
+    name: 'Square One',
+    release_date: '2016-08-08',
+    sale: 0
+  },
+  {
+    id:'4d515e01-7b03-438e-b4c6-c7df75b4dfe0',
+    member_id: members[0].id,
+    name: 'Square Two',
+    release_date: '2016-11-01',
+    sale: 0
+  },
+  {
     id:'72bbd839-4cbd-4074-8229-4a994646989a',
     member_id: members[0].id,
     name: 'Square Up',
-    release_date: '2018/06/15',
+    release_date: '2018-06-15',
     sale: 544410
   },
   {
     id:'cac3de4a-0f1e-4d78-995d-5d2faab61c9f',
     member_id: members[0].id,
     name: 'Kill This Love',
-    release_date: '2019/04/05',
+    release_date: '2019-04-05',
     sale: 715915
   },
   {
     id:'60620b50-f0ee-44b0-9ea9-43283f7b518f',
     member_id: members[0].id,
     name: 'The Album',
-    release_date: '2020/10/02',
+    release_date: '2020-10-02',
     sale: 1649559
   },
   {
     id:'d3e460d5-04cf-476a-8eb5-1768b6a29b2e',
     member_id: members[0].id,
     name: 'Born Pink',
-    release_date: '2022/09/16',
+    release_date: '2022-09-16',
     sale: 2872940
   },
   {
     id:'63081bec-259e-4378-a9f3-3be45716a8b2',
     member_id: members[1].id,
     name: 'Me',
-    release_date: '2023/03/31', 
+    release_date: '2023-03-31', 
     sale: 1542205
   },
   {
     id:'5b20c12d-59e1-4818-9c69-663d7f51da47',
     member_id: members[2].id,
     name: 'Solo',
-    release_date: '2018/11/12', 
+    release_date: '2018-11-12', 
     sale: 213016
   },
   {
     id:'349182fa-9424-4e32-85f7-ce200261c54a',
     member_id: members[3].id,
     name: 'R',
-    release_date: '2021/03/12', 
+    release_date: '2021-03-12', 
     sale: 875563
   },
   {
     id:'2a6d1c87-ecd3-49aa-96f6-d42f4cec69bf',
     member_id: members[4].id,
     name: 'Lalisa',
-    release_date: '2021/09/10', 
+    release_date: '2021-09-10', 
     sale: 845866
   }
+];
+
+const singles = [
+  {
+    id:'8bf2e781-363e-4be1-9dcc-b0486572fb14',
+    album_id: albums[0].id,
+    member_id: members[0].id,
+    name: 'Whistle',
+    views: 876528235,
+    streamings: 359559390,
+  },
+  {
+    id:'7b5e794c-5bd4-4e2b-b455-e1f8921595d9',
+    album_id: albums[0].id,
+    member_id: members[0].id,
+    name: 'BOOMBAYAH',
+    views: 1665471972,
+    streamings: 503364169,
+  },{
+    id:'90d75143-00fc-4013-aed4-fd9c49666708',
+    album_id: albums[1].id,
+    member_id: members[0].id,
+    name: 'Playing with Fire',
+    views: 857525567,
+    streamings: 400214120,
+  },{
+    id:'2818b015-e4a6-46f6-af1f-1b0277c30c3b',
+    album_id: albums[1].id,
+    member_id: members[0].id,
+    name: 'Stay',
+    views: 356091812,
+    streamings: 213793504,
+  },{
+    id:'41789e94-03ab-4f33-8427-665311a1f5b2',
+    album_id: null,
+    member_id: members[0].id,
+    name: 'As If It\'s Your Last',
+    views: 1347832119,
+    streamings: 550771120,
+  },
 ];
 
 module.exports = {
@@ -321,5 +374,6 @@ module.exports = {
   revenue,
   albums,
   members,
-  events
+  events,
+  singles
 };

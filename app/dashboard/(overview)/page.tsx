@@ -1,11 +1,10 @@
 import CardWrapper from '@/app/ui/dashboard/cards';
-import RevenueChart from '@/app/ui/dashboard/revenue-chart';
-import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
 import { Metadata } from 'next';
 import SalesChart from '@/app/ui/dashboard/sales-chart';
+import RecentEvents from '@/app/ui/dashboard/recent-events';
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -26,7 +25,7 @@ export default async function Page() {
                 <SalesChart />
             </Suspense>
             <Suspense fallback={<LatestInvoicesSkeleton />}>
-                <LatestInvoices />
+                <RecentEvents />
             </Suspense>
         </div>
         </main>
