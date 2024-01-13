@@ -7,9 +7,28 @@ import {
   LatestInvoiceRaw,
   User,
   Revenue,
+  Albums,
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
+
+export async function fetchAlbums() {
+  noStore();
+
+  try {
+    console.log('Fetching albums data...');
+    // mock wait
+    await new Promise((resolve) => setTimeout(resolve, 2500));
+
+    const data = await sql<Albums> `SELECT * FROM albums ORDER BY release_date ASC`;
+    console.log('Data fetch completed after 2.5 seconds.');
+
+    return data.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch albums data');
+  }
+}
 
 export async function fetchRevenue() {
   // Add noStore() here prevent the response from being cached.
@@ -57,6 +76,35 @@ export async function fetchLatestInvoices() {
   }
 }
 
+export async function fetchBPCardData() {
+  noStore();
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    const totalSalesPromise = sql`SELECT SUM(sale) AS total FROM albums`;
+    const totalViewsPromise = 999999999999;
+    const upcomingEventsPromise = sql`SELECT COUNT(*) FROM events WHERE date >= CURRENT_DATE`;
+
+    const data = await Promise.all([
+      totalSalesPromise,
+      upcomingEventsPromise
+    ]);
+
+    const totalSales = Number(data[0].rows[0].total ?? '0');
+    const upcomingEvents = Number(data[1].rows[0].count ?? '0');
+    const totalViews = totalViewsPromise;
+
+    return {
+      totalSales,
+      totalViews,
+      upcomingEvents
+    };
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch card data.');
+  }
+}
+
 export async function fetchCardData() {
   noStore();
   try {
@@ -95,7 +143,7 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,

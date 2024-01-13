@@ -5,6 +5,7 @@ import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { RevenueChartSkeleton, LatestInvoicesSkeleton, CardsSkeleton } from '@/app/ui/skeletons';
 import { Metadata } from 'next';
+import SalesChart from '@/app/ui/dashboard/sales-chart';
 
 export const metadata: Metadata = {
     title: 'Dashboard',
@@ -22,7 +23,7 @@ export default async function Page() {
         </div>
         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8">
             <Suspense fallback={<RevenueChartSkeleton />}>            
-                <RevenueChart />
+                <SalesChart />
             </Suspense>
             <Suspense fallback={<LatestInvoicesSkeleton />}>
                 <LatestInvoices />

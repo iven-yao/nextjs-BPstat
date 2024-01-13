@@ -1,4 +1,4 @@
-import { Revenue } from './definitions';
+import { Albums, Revenue } from './definitions';
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
@@ -20,6 +20,18 @@ export const formatDateToLocal = (
   const formatter = new Intl.DateTimeFormat(locale, options);
   return formatter.format(date);
 };
+
+export const generateSaleChartYAxis = (albums: Albums[]) => {
+  const yAxisLabels = [];
+  const highestRecord = Math.max(...albums.map((album) => album.sale));
+  const topLabel = Math.ceil(highestRecord / 1000000) * 1000000;
+
+  for (let i = topLabel; i >= 0; i -= 500000) {
+    yAxisLabels.push(`${i / 1000000}M`);
+  }
+
+  return { yAxisLabels, topLabel };
+}
 
 export const generateYAxis = (revenue: Revenue[]) => {
   // Calculate what labels we need to display on the y-axis

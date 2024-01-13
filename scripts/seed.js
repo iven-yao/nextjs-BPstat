@@ -3,6 +3,9 @@ const {
   invoices,
   customers,
   revenue,
+  members,
+  albums,
+  events,
   users,
 } = require('../app/lib/placeholder-data.js');
 const bcrypt = require('bcrypt');
@@ -160,13 +163,134 @@ async function seedRevenue(client) {
   }
 }
 
+async function seedMembers(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "members" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS members (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        image_url VARCHAR(255) NOT NULL
+      );
+    `;
+
+    console.log(`Created "members" table`);
+
+    // Insert data into the "members" table
+    const insertedMembers = await Promise.all(
+      members.map(
+        (member) => client.sql`
+        INSERT INTO members (id, name, image_url)
+        VALUES (${member.id}, ${member.name}, ${member.image_url})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedMembers.length} members`);
+
+    return {
+      createTable,
+      members: insertedMembers,
+    };
+  } catch (error) {
+    console.error('Error seeding members:', error);
+    throw error;
+  }
+}
+
+async function seedAlbums(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+
+    // Create the "albums" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS albums (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        member_id UUID NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        release_date VARCHAR(255) NOT NULL,
+        sale INT NOT NULL
+      );
+    `;
+
+    console.log(`Created "albums" table`);
+
+    // Insert data into the "albums" table
+    const insertedAlbums = await Promise.all(
+      albums.map(
+        (album) => client.sql`
+        INSERT INTO albums (id, member_id, name, release_date, sale)
+        VALUES (${album.id}, ${album.member_id}, ${album.name}, ${album.release_date}, ${album.sale})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedAlbums.length} albums`);
+
+    return {
+      createTable,
+      albums: insertedAlbums,
+    };
+  } catch (error) {
+    console.error('Error seeding albums:', error);
+    throw error;
+  }
+}
+
+async function seedEvents(client) {
+  try {
+    await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    // Create the "events" table if it doesn't exist
+    const createTable = await client.sql`
+      CREATE TABLE IF NOT EXISTS events (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        member_id UUID NOT NULL,
+        description VARCHAR(255) NOT NULL,
+        date DATE NOT NULL,
+        category VARCHAR(255) NOT NULL
+      );
+    `;
+
+    console.log(`Created "events" table`);
+
+    // Insert data into the "albums" table
+    const insertedEvents = await Promise.all(
+      events.map(
+        (event) => client.sql`
+        INSERT INTO events (id, member_id, description, date, category)
+        VALUES (${event.id}, ${event.member_id}, ${event.description}, ${event.date}, ${event.category})
+        ON CONFLICT (id) DO NOTHING;
+      `,
+      ),
+    );
+
+    console.log(`Seeded ${insertedEvents.length} events`);
+
+    return {
+      createTable,
+      events: insertedEvents,
+    };
+  } catch (error) {
+    console.error('Error seeding events:', error);
+    throw error;
+  }
+}
+
+
 async function main() {
   const client = await db.connect();
 
-  await seedUsers(client);
-  await seedCustomers(client);
-  await seedInvoices(client);
-  await seedRevenue(client);
+  // await seedUsers(client);
+  // await seedCustomers(client);
+  // await seedInvoices(client);
+  // await seedRevenue(client);
+  // await seedMembers(client);
+  // await seedAlbums(client);
+  await seedEvents(client);
 
   await client.end();
 }
