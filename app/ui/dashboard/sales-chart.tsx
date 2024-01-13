@@ -39,7 +39,7 @@ export default async function SalesChart() {
           </div>
 
           {albums.map((album) => (
-            <div key={album.name} className="has-tooltip flex flex-col gap-2">
+            <div key={album.id} className="has-tooltip flex flex-col gap-2">
                 <div className='tooltip rounded shadow-lg text-xs w-fit'>{album.sale.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</div>
                 <div
                     className="w-full rounded-md bg-pink-300 relative cursor-pointer mt-auto"
@@ -54,7 +54,7 @@ export default async function SalesChart() {
         <div className='mt-0 grid grid-cols-9 gap-2 rounded-md md:gap-4'>
             <div></div>
             {albums.map((album) => (
-                <div className="text-sm text-center text-gray-400">
+                <div key={album.id} className="text-sm text-center text-gray-400">
                     {album.name.toString()}
                 </div>
             ))}

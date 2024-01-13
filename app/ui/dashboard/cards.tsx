@@ -17,7 +17,6 @@ export default async function CardWrapper() {
   return (
     <>
       {/* NOTE: comment in this code when you get to this point in the course */}
-
       <Card title="Total Sales" value={totalSales} type="sales" />
       <Card title="Total Views" value={totalViews} type="views" />
       <Card title="Upcoming Events" value={upcomingEvents} type="events" />
