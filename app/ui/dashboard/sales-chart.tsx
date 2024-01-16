@@ -1,6 +1,5 @@
 import { generateSaleChartYAxis, generateYAxis } from '@/app/lib/utils';
 import { CalendarIcon } from '@heroicons/react/24/outline';
-import { lusitana } from '@/app/ui/fonts';
 import { fetchSaleChart } from '@/app/lib/data';
 
 // This component is representational only.
@@ -22,12 +21,12 @@ export default async function SalesChart() {
 
   return (
     <div className="w-full md:col-span-4">
-      <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
+      <h2 className={`mb-4 text-xl md:text-2xl`}>
         Top Sales Album
       </h2>
       {/* NOTE: comment in this code when you get to this point in the course */}
 
-      <div className="rounded-xl bg-black border-2 border-pink-400 p-4">
+      <div className="rounded-xl bg-black border-2 border-pink-300 p-4">
         <div className="sm:grid-cols-9 mt-0 grid grid-cols-9 items-end gap-2 rounded-md md:gap-4">
           <div
             className="hidden flex-col justify-between text-right text-sm text-gray-400 sm:flex"
@@ -61,7 +60,7 @@ export default async function SalesChart() {
         </div>
         <div className="flex items-center pb-2 pt-6">
           <CalendarIcon className="h-5 w-5 text-gray-500" />
-          <h3 className="ml-2 text-sm text-gray-500 ">Updated just now</h3>
+          <h3 className="ml-2 text-sm text-gray-500 ">Updated 2024-01-01</h3>
         </div>
       </div>
     </div>

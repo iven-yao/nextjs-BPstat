@@ -36,7 +36,7 @@ export default function Form({ members }: { members: MemberField[] }) {
               aria-describedby="member-error"
             >
               <option value="" disabled>
-                Select a customer
+                Select a member
               </option>
               {members.map((member) => (
                 <option key={member.id} value={member.id}>

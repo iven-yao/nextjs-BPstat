@@ -5,35 +5,37 @@ export default function EventStatus({ status }: { status: string }) {
   return (
     <span
       className={clsx(
-        'inline-flex items-center rounded-full px-2 py-1 text-xs',
+        'inline-flex items-center rounded-full px-2 py-1 text-xs border',
         {
-          'bg-gray-100 text-gray-500': status === 'pending',
-          'bg-green-500 text-white': status === 'paid',
+          'text-blue-600 border-blue-400': status === 'tvshow',
+          'text-red-600 border-red-400': status === 'stage',
+          'text-yellow-600 border-yellow-400': status === 'special',
+          'text-lime-600 border-lime-400': status === 'music'
         },
       )}
     >
       {status === 'special' ? (
         <>
+          <SparklesIcon className="mr-1 w-4" />
           Special
-          <SparklesIcon className="ml-1 w-4 text-gray-500" />
         </>
       ) : null}
       {status === 'tvshow' ? (
         <>
+          <TvIcon className="mr-1 w-4" />
           TV Show
-          <TvIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}
       {status === 'stage' ? (
         <>
+          <FireIcon className="mr-1 w-4" />
           Stage
-          <FireIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}
       {status === 'music' ? (
         <>
+          <MusicalNoteIcon className="mr-1 w-4" />
           Music
-          <MusicalNoteIcon className="ml-1 w-4 text-white" />
         </>
       ) : null}
     </span>

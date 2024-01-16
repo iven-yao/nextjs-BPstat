@@ -17,7 +17,7 @@ export default async function InvoicesTable({
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
-        <div className="rounded-lg bg-black border-2 border-pink-400 text-white p-2 md:pt-0">
+        <div className="rounded-lg bg-black border-2 border-pink-300 text-white p-2 md:pt-0">
           <div className="md:hidden">
             {events?.map((event) => (
               <div

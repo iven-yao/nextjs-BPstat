@@ -3,7 +3,8 @@
 import {
   UserGroupIcon,
   HomeIcon,
-  DocumentDuplicateIcon,
+  StopCircleIcon,
+  CalendarDaysIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -16,7 +17,12 @@ const links = [
   {
     name: 'Events',
     href: '/dashboard/events',
-    icon: DocumentDuplicateIcon,
+    icon: CalendarDaysIcon,
+  },
+  {
+    name: 'Discography',
+    href: '/dashboard/discography',
+    icon: StopCircleIcon,
   },
   { name: 'Members', href: '/dashboard/members', icon: UserGroupIcon },
 ];
@@ -32,9 +38,9 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-transparent p-3 text-sm font-medium hover:border-2 hover:border-pink-400 hover:text-pink-400 md:flex-none md:justify-start md:p-2 md:px-3",
+              "flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-transparent p-3 text-sm font-medium border border-transparent hover:border-pink-300 hover:text-pink-300 md:flex-none md:justify-start md:p-2 md:px-3",
               {
-                'text-pink-400': pathname === link.href
+                'text-pink-300': pathname === link.href
               }
             )}
           >

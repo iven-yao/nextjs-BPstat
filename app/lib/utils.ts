@@ -1,4 +1,8 @@
-import { Albums, Revenue } from './definitions';
+import { TopAlbums, Revenue } from './definitions';
+
+export const formatBigNumber = (amount: number) => {
+  return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
 
 export const formatCurrency = (amount: number) => {
   return (amount / 100).toLocaleString('en-US', {
@@ -21,7 +25,7 @@ export const formatDateToLocal = (
   return formatter.format(date);
 };
 
-export const generateSaleChartYAxis = (albums: Albums[]) => {
+export const generateSaleChartYAxis = (albums: TopAlbums[]) => {
   const yAxisLabels = [];
   const highestRecord = Math.max(...albums.map((album) => album.sale));
   const topLabel = Math.ceil(highestRecord / 1000000) * 1000000;

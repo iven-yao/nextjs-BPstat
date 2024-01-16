@@ -33,10 +33,12 @@ export type Revenue = {
 
 export type Albums = {
   id: string;
-  member_id: string;
   name: string;
-  release_date: string;
+  release_date: Date;
   sale: number;
+  cover: string;
+  artist: string;
+  artist_img: string;
 }
 
 export type Events = {
@@ -54,6 +56,22 @@ export type EventForm = {
   description: string;
   date: Date;
   category: 'special'|'stage'|'tvshow'|'music';
+}
+
+export type TopAlbums = {
+  id: string;
+  name: string;
+  release_date: string;
+  sale: number;
+}
+
+export type Singles = {
+  id: string;
+  album_id: string;
+  member_id: string;
+  name: string;
+  views: number;
+  streamings: number;
 }
 
 export type MemberField = {

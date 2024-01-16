@@ -213,7 +213,8 @@ async function seedAlbums(client) {
         member_id UUID NOT NULL,
         name VARCHAR(255) NOT NULL,
         release_date DATE NOT NULL,
-        sale INT NOT NULL
+        sale INT NOT NULL,
+        cover VARCHAR(255) NOT NULL
       );
     `;
 
@@ -223,8 +224,8 @@ async function seedAlbums(client) {
     const insertedAlbums = await Promise.all(
       albums.map(
         (album) => client.sql`
-        INSERT INTO albums (id, member_id, name, release_date, sale)
-        VALUES (${album.id}, ${album.member_id}, ${album.name}, ${album.release_date}, ${album.sale})
+        INSERT INTO albums (id, member_id, name, release_date, sale, cover)
+        VALUES (${album.id}, ${album.member_id}, ${album.name}, ${album.release_date}, ${album.sale}, ${album.cover})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -284,6 +285,7 @@ async function seedEvents(client) {
 async function seedSingles(client) {
   try {
     await client.sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+    await client.sql`DROP TABLE singles`;
     // Create the "singles" table if it doesn't exist
     const createTable = await client.sql`
       CREATE TABLE IF NOT EXISTS singles (
@@ -291,8 +293,8 @@ async function seedSingles(client) {
         album_id UUID,
         member_id UUID NOT NULL,
         name VARCHAR(255) NOT NULL,
-        views INT NOT NULL,
-        streamings INT NOT NULL
+        views BIGINT NOT NULL,
+        streamings BIGINT NOT NULL
       );
     `;
 
@@ -302,8 +304,8 @@ async function seedSingles(client) {
     const insertedSingles = await Promise.all(
       singles.map(
         (single) => client.sql`
-        INSERT INTO singles (id, album_id, member_id, name, views, streamings)
-        VALUES (${single.id}, ${single.album_id}, ${single.member_id}, ${single.name}, ${single.views}, ${single.streamings})
+        INSERT INTO singles (album_id, member_id, name, views, streamings)
+        VALUES (${single.album_id}, ${single.member_id}, ${single.name}, ${single.views}, ${single.streamings})
         ON CONFLICT (id) DO NOTHING;
       `,
       ),
@@ -330,8 +332,8 @@ async function main() {
   // await seedRevenue(client);
   // await seedMembers(client);
   // await seedEvents(client);
-  // await seedAlbums(client);
-  // await seedSingles(client);
+  await seedAlbums(client);
+  await seedSingles(client);
 
   await client.end();
 }

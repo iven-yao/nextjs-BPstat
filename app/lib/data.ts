@@ -5,23 +5,23 @@ import {
   LatestInvoiceRaw,
   User,
   Revenue,
-  Albums,
+  TopAlbums,
   Events,
   EventForm,
-  MemberField
+  MemberField,
+  Singles,
+  Albums
 } from './definitions';
 import { formatCurrency } from './utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
 export async function fetchSaleChart() {
-  noStore();
-
   try {
     console.log('Fetching albums data...');
     // mock wait
     await new Promise((resolve) => setTimeout(resolve, 2500));
 
-    const data = await sql<Albums> `SELECT * FROM albums ORDER BY sale DESC LIMIT 8`;
+    const data = await sql<TopAlbums> `SELECT * FROM albums ORDER BY sale DESC LIMIT 8`;
     console.log('Data fetch completed after 2.5 seconds.');
 
     return data.rows;
@@ -78,7 +78,7 @@ export async function fetchLatestInvoices() {
 }
 
 export async function fetchRecentEvents() {
-  // noStore();
+  noStore();
   try {
     await new Promise((resolve) => setTimeout(resolve, 1000));
     const data = await sql<Events>`
@@ -241,6 +241,42 @@ export async function fetchEventById(id: string) {
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch event.');
+  }
+}
+
+export async function fetchAlbums() {
+  try {
+    const data = await sql<Albums>`
+      SELECT
+        albums.id,
+        albums.name,
+        albums.release_date,
+        albums.sale,
+        albums.cover,
+        members.name as artist,
+        members.image_url as artist_img
+      FROM albums
+      JOIN members ON albums.member_id = members.id
+      ORDER BY albums.release_date ASC
+    `;
+
+    return data.rows;
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch all albums.');
+  }
+}
+
+export async function fetchSingles() {
+  try{
+    const data = await sql<Singles>`
+      SELECT * FROM singles
+    `;
+
+    return data.rows;
+  } catch(error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch all singles.');
   }
 }
 
