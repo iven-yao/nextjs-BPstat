@@ -288,7 +288,7 @@ const singles = [
   },{
     album_id:albums[4].id,
     member_id: members[0].id,
-    name: 'Ice Cream (with Selena Gomez)',
+    name: 'Ice Cream',
     views: 888334713,
     streamings: 551178794
   },{
@@ -300,7 +300,7 @@ const singles = [
   },{
     album_id:albums[4].id,
     member_id: members[0].id,
-    name: 'Bet You Wanna (Feat. Cardi B)',
+    name: 'Bet You Wanna',
     views: 0,
     streamings: 185079479
   },{
