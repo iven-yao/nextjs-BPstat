@@ -2,7 +2,11 @@
 a next.js+postgreSQL practice project, a web project that displays BLACKPINK records, and allow user to login and create/update/delete events
 
 ### DEMO
-[![Watch the video](https://img.youtube.com/vi/5_wNKCaxqPc/maxresdefault.jpg)](https://youtu.be/5_wNKCaxqPc)
+
+
+
+https://github.com/iven-yao/nextjs-BPstat/assets/25358966/5240892c-24c3-45f6-8af1-a44e813ef25b
+
 
 ### MORE to come
 <img src="./public/bp-spinner.gif" alt="bp-spinner"/>
