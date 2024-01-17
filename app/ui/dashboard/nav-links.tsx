@@ -4,7 +4,8 @@ import {
   UserGroupIcon,
   HomeIcon,
   StopCircleIcon,
-  CalendarDaysIcon
+  CalendarDaysIcon,
+  ChartBarIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -23,6 +24,11 @@ const links = [
     name: 'Discography',
     href: '/dashboard/discography',
     icon: StopCircleIcon,
+  },
+  {
+    name: 'Charts',
+    href: '/dashboard/charts',
+    icon: ChartBarIcon,
   },
   { name: 'Members', href: '/dashboard/members', icon: UserGroupIcon },
 ];

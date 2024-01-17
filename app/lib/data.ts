@@ -222,7 +222,15 @@ export async function fetchSingles() {
   noStore();
   try{
     const data = await sql<Singles>`
-      SELECT * FROM singles
+      SELECT
+        singles.id,
+        singles.album_id,
+        members.image_url as member_image_url,
+        singles.name,
+        singles.views,
+        singles.streamings
+      FROM singles
+      JOIN members ON singles.member_id = members.id
     `;
 
     return data.rows;

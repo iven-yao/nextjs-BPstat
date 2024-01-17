@@ -68,7 +68,7 @@ export type TopAlbums = {
 export type Singles = {
   id: string;
   album_id: string;
-  member_id: string;
+  member_image_url: string;
   name: string;
   views: number;
   streamings: number;
