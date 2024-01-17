@@ -240,7 +240,7 @@ export async function fetchSingles() {
   }
 }
 
-export async function fetchMembers() {
+export async function fetchMembersForm() {
   try {
     const data = await sql<MemberField>`
       SELECT id, name
