@@ -39,9 +39,9 @@ export type State = {
 const FormSchema = z.object({
     id: z.string(),
     member_id: z.string({invalid_type_error: 'Please select a member.',}),
-    description: z.string({ invalid_type_error: 'Please enter description about this event.' }),
+    description: z.string({required_error:'Please enter something about this event'}).min(1, 'Please enter something about this event'),
     category: z.enum(['special', 'stage','tvshow','music'],{ invalid_type_error: 'Please select an invoice status.'}),
-    date: z.string({invalid_type_error: 'Please pick a date'})
+    date: z.coerce.date()
 });
 
 const CreateEvent = FormSchema.omit({id: true});
@@ -53,7 +53,7 @@ export async function createEvent(prevState: State, formData: FormData) {
       member_id: formData.get('member_id'),
       description: formData.get('description'),
       category: formData.get('category'),
-      date: formData.get('date')
+      date: Date.parse(formData.get('date')?.toString()||"")
     });
    
     // If form validation fails, return errors early. Otherwise, continue.
@@ -70,7 +70,7 @@ export async function createEvent(prevState: State, formData: FormData) {
     try {
       await sql`
         INSERT INTO events (member_id, description, category, date)
-        VALUES (${member_id}, ${description}, ${category}, ${date})
+        VALUES (${member_id}, ${description}, ${category}, ${date.toISOString().slice(0,10)})
       `;
     } catch (error) {
       // If a database error occurs, return a more specific error.
@@ -102,7 +102,7 @@ export async function updateEvent(id:string, prevState: State, formData: FormDat
 
         await sql`
             UPDATE events
-            SET member_id = ${member_id}, description = ${description}, category = ${category}, date = ${date}
+            SET member_id = ${member_id}, description = ${description}, category = ${category}, date = ${date.toISOString().slice(0,10)}
             WHERE id = ${id}
         `;
 

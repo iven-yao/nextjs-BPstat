@@ -4,9 +4,6 @@ import { MemberField } from '@/app/lib/definitions';
 import Link from 'next/link';
 import {
   CalendarDaysIcon,
-  CheckIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
   PencilSquareIcon,
   TagIcon,
   UserCircleIcon,
@@ -93,7 +90,6 @@ export default function Form({ members }: { members: MemberField[] }) {
                 id="date"
                 name="date"
                 type="date"
-                defaultValue={""}
                 className="text-black peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                 aria-describedby='date-error'
               />

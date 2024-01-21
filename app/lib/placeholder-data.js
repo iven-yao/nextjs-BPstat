@@ -430,7 +430,6 @@ const singles = [
 ];
 
 module.exports = {
-  users,
   albums,
   members,
   events,
