@@ -2,7 +2,7 @@
 a next.js+postgreSQL practice project, a web project that displays BLACKPINK records, and allow user to login and create/update/delete events
 
 ## https://bpstat.vercel.app
-to login use this credential to login
+use this test credential to login
 - email: user@nextmail.com
 - pwd: 123456
 
